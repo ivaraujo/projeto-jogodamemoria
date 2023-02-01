@@ -20,20 +20,77 @@ const createElement = (tag, className) => {
     return element;
 }
 
-const createCard = () => {
+let firstCard = '';
+let secondCard = '';
+
+const checkEndGame = () => {
+    const disableCards = document.querySelectorAll('.disable-card');
+    if(disableCards.length === 20){
+        alert('Parabéns! Você venceu, FIM DE JOGO.')
+    }
+}
+
+const checkCards = () => {
+   const firstValor = firstCard.getAttribute('data-valor');
+   const secondValor = secondCard.getAttribute('data-valor');
+   if(firstValor === secondValor){
+        firstCard.firstChild.classList.add('disable-card');
+        secondCard.firstChild.classList.add('disable-card');
+        firstCard = '';
+        secondCard = '';
+        checkEndGame();
+   }
+   else{
+        setTimeout(() => {
+            firstCard.classList.remove('reveal-card');
+            secondCard.classList.remove('reveal-card');
+            firstCard = '';
+            secondCard = '';  
+        },500);              
+   }
+}
+
+const revealCard = ({target}) => {
+    if(target.parentNode.className.includes('reveal-card')){
+        return;
+    }
+
+    if(firstCard === ''){
+        target.parentNode.classList.add('reveal-card');
+        firstCard = target.parentNode;
+    }
+    else if(secondCard === ''){
+        target.parentNode.classList.add('reveal-card');
+        secondCard = target.parentNode;
+        checkCards();
+    }
+
+    
+}
+
+const createCard = (valor) => {
     const card = createElement('div','card');
     const front = createElement('div','face front');
     const back = createElement('div','face back');
 
+    front.innerHTML = valor;
+
     card.appendChild(front);
     card.appendChild(back);
+
+    card.addEventListener('click', revealCard);
+    card.setAttribute('data-valor', valor);
 
     return card;
 }
 
-const loadGame = (){
-    tabuada.forEach((valor) => {
-        const card = createCard();
+const loadGame = () => {
+    const duplicateTabuada = [ ...tabuada, ... tabuada ];
+
+    const suffledArray = duplicateTabuada.sort(() => Math.random()-0.5);
+
+    duplicateTabuada.forEach((valor) => {
+        const card = createCard(valor);
         grid.appendChild(card);
     });
 }
