@@ -105,9 +105,16 @@ const startTimer = () => {
     },1000);
 }
 
+function recomecar(){
+    window.location = 'game.html';
+}
+
+function irMenu(){
+    window.location = '../index.html';
+}
+
 window.onload = () => {    
     spanPlayer.innerHTML = localStorage.getItem('player');
     startTimer();
     loadGame();
 }
-
